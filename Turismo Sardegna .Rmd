@@ -13,7 +13,7 @@ Il seguente progetto riguarda l'analisi di 2 dataset sul turismo in sardegna nel
 
 ```{r}
 
-movimenti2021= readr::read_csv("turismoSardegna/capacita_strutture_ricettive_mensile_2021.csv")
+movimenti2021= readr::read_csv("datasets/capacita_strutture_ricettive_mensile_2021.csv")
 movimenti2021
 ```
 
@@ -25,7 +25,7 @@ str(movimenti2021) #comune, anno, mese, Tipologia, Stelle, numero strutture, let
 ```
 
 ```{r}
-movimenti2021= readr::read_csv("turismoSardegna/capacita_strutture_ricettive_mensile_2021.csv", col_types = list(Comune= col_factor(), Stelle = col_factor(c(levels = "1 Stella", "2 Stelle", "III Categoria", "3 Stelle","II Categoria", "4 Stelle", "I Categoria", "5 Stelle", "5 Stelle Lusso")), Tipologia= col_factor()), na = "NULL")
+movimenti2021= readr::read_csv("datasets/capacita_strutture_ricettive_mensile_2021.csv", col_types = list(Comune= col_factor(), Stelle = col_factor(c(levels = "1 Stella", "2 Stelle", "III Categoria", "3 Stelle","II Categoria", "4 Stelle", "I Categoria", "5 Stelle", "5 Stelle Lusso")), Tipologia= col_factor()), na = "NULL")
 
 str(movimenti2021) 
 sum(is.na(movimenti2021)) #non sono presenti valori mancanti ma molte osservazioni riguardo le stelle delle strutture sono state etichettate come NULL.
@@ -46,7 +46,7 @@ provenienza
 ```
 
 ```{r}
-provenienza = readr::read_csv("turismoSardegna/movimenti_macrotipologia_2021 _provenienza.csv", col_types = list(provincia= col_factor(), macro_tipologia = col_factor (), macro_provenienza = col_factor(), provenienza = col_factor()))
+provenienza = readr::read_csv("datasets/movimenti_macrotipologia_2021 _provenienza.csv", col_types = list(provincia= col_factor(), macro_tipologia = col_factor (), macro_provenienza = col_factor(), provenienza = col_factor()))
 
 sum(is.na(provenienza)) #sono presenti 114 valori mancanti 
 str(provenienza)
