@@ -1,5 +1,5 @@
 ---
-title: "Turismo Sardengna 2021: capacità strutture ricettive e provenienza turisti"
+title: "Turismo Sardegna 2021: capacità strutture ricettive e provenienza turisti"
 output:
   html_document:
     df_print: paged
@@ -154,7 +154,7 @@ macro_tipologia %>%
 ```
  
 
-La maggior parte dei turisti preferisce pernottare in una struttura recettiva di macro-tipologia Alberghiera.
+La maggior parte dei turisti preferisce pernottare in una struttura ricettiva di macro-tipologia Alberghiera.
 
 
 
@@ -309,7 +309,7 @@ arrivi_mese %>%
 
 ```
 
-Il mese del 2021 in cui le strutture recettive ricevono il maggior numero di turisti è 
+Il mese del 2021 in cui le strutture ricettive ricevono il maggior numero di turisti è 
 agosto, seguito da luglio, settembre e giugno. In seguito, si osserva ottobre 
 con oltre 200 mila arrivi, mentre nei restanti mesi gli arrivi non superano mai quota 100 mila.
 
@@ -342,7 +342,7 @@ provincia_provenienza %>%
 
 ```
 
-La distribuzione degli arrivi dei turisti(raggruppati per provenienza) che hanno come provincia di destinazione quella di Sassari è mediamente superiore rispetto alle altre. Al contrario la distribuzione degli arrivi dei turisti, che hanno come provincia di destinazione "Oristano", è mediamente più bassa rispetto alle altre.
+La distribuzione degli arrivi dei turisti (raggruppati per provenienza) che hanno come provincia di destinazione quella di Sassari è mediamente superiore rispetto alle altre. Al contrario la distribuzione degli arrivi dei turisti, che hanno come provincia di destinazione "Oristano", è mediamente più bassa rispetto alle altre.
 
 
 ```{r }
@@ -371,8 +371,6 @@ arrivi_mese %>%
 ``` 
 
 Gli arrivi totali per la provincia di Sassari sono stati di oltre 1 milione. Per ciascuna delle restanti province gli arrivi totali sono al di sotto di quota 500 mila. 
-
-
 
 
 
