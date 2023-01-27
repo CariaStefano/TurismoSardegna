@@ -154,12 +154,30 @@ macro_tipologia %>%
 ```
  
 
+
 La maggior parte dei turisti preferisce pernottare in una struttura recettiva di macro-tipologia Alberghiera.
+
+
+```{r }
+
+numeroStruttureSardegna <- capacit2021 %>% 
+  group_by(Tipologia, Comune) %>%
+  summarise(`Numero Strutture` = max(`Numero Strutture`))#numero di mesi
+
+#numeroStruttureSardegna 
+
+numeroStruttureSardegna2= numeroStruttureSardegna %>%
+  group_by(Tipologia) %>% 
+  summarise(`Numero Strutture` = sum(`Numero Strutture`))
+
+
+numeroStruttureSardegna2
+
+```
 
 
 
 ```{r }
-library("scales")
 
 tipologia_ <- capacit2021 %>% 
   group_by(Tipologia) %>%
@@ -222,6 +240,7 @@ filter(tipologia) %>%
 Durante l'anno 2021 in Sardegna mediamente sono state operative ogni mese circa 300 case e appartamenti per vacanze e 42 strutture della tipologia ALbergo residenziale. Le restanti tipologie hanno un numero medio di strutture operanti inferiore a 40.  
 
 
+
 ```{r }
 
 tipologia_ <- capacit2021 %>% 
@@ -255,7 +274,65 @@ tipologia %>%
 Il numero medio di posti letto offerto ogni mese dell'anno dagli alberghi è quasi doppio rispetto al numero di letti di allogi privati (alberghi: 42.594, alloggi privati: 27.283 ). Si può inoltre affermare che il numero di posti letto del Campeggio è equiparabile al numero di posti letto di alloggi privati (24.694)
 
 
-# Arrivi
+
+```{r }
+
+filter(capacit2021) %>% 
+  ggplot(aes(Camere, `Numero Strutture`, color= Tipologia)) +
+  geom_point()+
+  ggtitle("Camere e numero di strutture ricettive in base alla tipologia") +
+  xlab("Camere") + ylab("Numero Strutture")
+
+
+
+# 
+```
+
+Il numero di strutture di Alloggi privati e Bed and breakfast è notevolmente superiore al numero di Alberghi. 
+strutture private e Bed and breakfast mostrano inoltre un gran numero di camere paragonabile al numero di camere della tipologia Albergo.
+
+
+```{r }
+summary(capacit2021$Letti)
+summary(capacit2021$Camere)
+summary(capacit2021$`Numero Strutture`)
+#capacit2021[capacit2021$`Numero Strutture`==904]
+capacit2021[capacit2021$`Numero Strutture` >= 404 ,] ## errore digitazione??
+capacit2021[capacit2021$Letti >= 3000 ,]
+
+```
+
+```{r }
+
+
+capacit2021_mesi = filter(capacit2021) %>% #, Comune == "BARUMINI") %>%
+  mutate(MonthLabel= month(Mese, label= T)) %>%
+  group_by(Comune, MonthLabel) %>%
+  summarise(Letti = sum(Letti))
+
+capacit2021_mesi %>% 
+  arrange(desc(Letti))
+filter(capacit2021_mesi, Comune == "ALGHERO") %>% 
+  #arrange(desc(Camere))%>% 
+ # head(100) %>%
+  ggplot(aes(MonthLabel, Letti)) +
+  geom_bar(stat= "identity")+
+  #geom_boxplot(coef=3) +
+  #geom_jitter(width= 0.1, alpha =0.3)+
+  scale_y_continuous(labels = label_number( big.mark = ".", decimal.mark= ","))+
+  theme(axis.text.y = element_text(size = 8), plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  ggtitle("Numero posti letto nel comune di Alghero", 
+          subtitle= "Numero di posti letto delle strutture ricettive per mese") +
+  xlab("Mesi") + ylab("N° posti letto")
+
+
+
+
+```
+
+Il grafico mostra il numero dei posti letto durante i mesi
+
 
 ```{r }
 provenienza_cleaned %>%
@@ -285,7 +362,7 @@ Fa eccezione la distribuzione di gennaio, in cui la mediana risulta maggiormente
 
 
 ```{r }
-
+library("scales")
 arrivi_mese<- provenienza_cleaned %>% 
   group_by(mese)  %>% 
   summarise(arrivi = sum(arrivi))
@@ -316,14 +393,54 @@ con oltre 200 mila arrivi, mentre nei restanti mesi gli arrivi non superano mai 
 
 
 ```{r }
-
 provincia_provenienza<- provenienza_cleaned %>% 
-  group_by(provenienza, provincia) %>%
+  group_by(provenienza, provincia) #%>%
   summarise(arrivi = sum(arrivi), presenze = sum(presenze ))
 
 provincia_provenienza
 
 
+arrivi_per_provincia<- provenienza_cleaned %>% 
+  group_by(provincia, mese) %>%
+  #summarise(arrivi = sum(arrivi), presenze = sum(presenze ))
+
+arrivi_per_provincia %>% 
+  mutate(MonthLabel= month(mese, label= T)) %>%
+  ggplot(aes(MonthLabel, arrivi, col= provincia))+
+  geom_line() + 
+  #geom_point() +
+  scale_y_continuous(trans= "log2", labels = label_number( big.mark = ".", decimal.mark= ","))+
+  scale_x_date()+
+  theme(axis.text.y = element_text(size = 8), plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5)) +
+  ggtitle("Arrivi mensili nelle strutture in Sardegna 2021 ", 
+          subtitle= "Numero di arrivi nelle strutture ricettive sarde nei vari mesi dell'anno") +
+  xlab("N° Arrivi") + ylab("Provenienza")
+
+
+``` 
+
+```{r } 
+filter(provincia_provenienza) %>% 
+  ggplot(aes(presenze, arrivi, color= provincia)) +
+  geom_point() 
+
+
+
+```
+
+Per quanto rigurada il pernottamento, i turisti raggruppati in base alla provenienza 
+e alla provincia di destinazione trascorrono un numero di notti superire nella provincia di Sassari rispetto alle altre province.
+
+
+
+```{r }
+filter(provincia_provenienza, provenienza != "Sardegna") %>%
+  arrange(desc(presenze)) %>%
+  head(300)
+```
+
+```{r }
 provincia_provenienza %>%
   #arrange(desc(arrivi)) %>%
   #head(300) %>%
@@ -345,43 +462,31 @@ provincia_provenienza %>%
 La distribuzione degli arrivi dei turisti(raggruppati per provenienza) che hanno come provincia di destinazione quella di Sassari è mediamente superiore rispetto alle altre. Al contrario la distribuzione degli arrivi dei turisti, che hanno come provincia di destinazione "Oristano", è mediamente più bassa rispetto alle altre.
 
 
-```{r }
-
-arrivi_mese<- provenienza_cleaned %>% 
-  group_by(provincia)  %>% 
-  summarise(arrivi = sum(arrivi)) %>% 
-  mutate(provincia = reorder(provincia, arrivi))
-
-arrivi_mese
-
-arrivi_mese %>% 
-  #mutate(MonthLabel= month(mese, label= T)) %>%
-  ggplot(aes(provincia, arrivi))+
-  geom_bar(stat = "identity") +
-  scale_y_continuous(labels = label_number( big.mark = ".", decimal.mark= ","))+
-  scale_x_discrete(labels = scales::label_wrap(10)) +
-  theme(axis.text.y = element_text(size = 8), plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5)) +
-  ggtitle("Arrivi totali per provincia di destinazione Sardegna 2021 ", 
-          subtitle= "Numero di arrivi totali per ciascuna provincia ") +
-  xlab("Province") + ylab("Arrivi")
-
-  #scale_y_continuous(label= unit_format())
-
-``` 
-
-Gli arrivi totali per la provincia di Sassari sono stati di oltre 1 milione. Per ciascuna delle restanti province gli arrivi totali sono al di sotto di quota 500 mila. 
-
-
-
-
 
 # Conclusioni
 
-É stata svolta un attività di preprocessing per analizzare i dati raggruppandoli secondo diverse categorie. Successivamente è stata fatta un'analisi esplorativa del dataset e volta ad analizzare la provenienza dei turisti, la tipologia delle strutture ricettive e gli arrivi. La tipologia di struttura ricettiva più diffusa è l'alloggio privato, ma la più diffusa in termini di posti letto è la tipologia alberghiera. Gran parte dei clienti delle strutture ricettive sono italiani (63%) e tra questi, molti provengono dalla Sardegna. Infine, per quanto riguarda gli arrivi, si concentrano nel periodo maggio-ottobre e una larga parte dei turisti ha come destinazione la provincia di Sassari. 
+é stata svolta un attività di preprocessing per analizzare i dati raggruppandoli secondo diverse categorie. Successivamente è stata fatta un'analisi esplorativa del dataset.
 
 
 
+
+```{r }
+
+provenienza_cleaned %>% ggplot(aes(arrivi, fill=macro_provenienza))+
+  geom_density(alpha = 0.2, color = 0) +   geom_line(stat='density')
+
+```
+
+
+```{r }
+
+params <- provenienza_cleaned %>% filter(macro_provenienza=="Stranieri") %>%   summarize(mean = mean(arrivi), sd = sd(arrivi))
+
+provenienza_cleaned %>% filter(macro_provenienza=="Italiani") %>%   ggplot(aes(sample = arrivi)) +   geom_qq(dparams = params) +  geom_abline()
+
+
+
+```
 
 
 
